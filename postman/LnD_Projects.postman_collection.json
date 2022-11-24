@@ -1,0 +1,82 @@
+{
+	"info": {
+		"_postman_id": "7081510b-deed-493a-8c68-9be1c78fa4f2",
+		"name": "LnD_Projects",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create otp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\":\"Nitish\", \n    \"last_name\":\"Kumar\",\n     \"email\":\"nitishdev021@gmail.com\",\n      \"phone\":7827792019 \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/create-otp",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"create-otp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Validate Otp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"nitishdev021@gmail.com\",\n    \"otp\":\"452432\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/v1/users/validate-otp",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"validate-otp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "REsend OTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"nitishdev021@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				}
+			},
+			"response": []
+		}
+	]
+}
