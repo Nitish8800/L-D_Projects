@@ -3,48 +3,37 @@ import { User } from "@models/user/user.schema";
 
 export const createOtp = async (userData: IUser) => {
   const { email } = userData;
-  const existOrNot = await User.findOne({ email });
+  const emailExists = await User.findOne({ email });
 
-  if (existOrNot) {
-    await User.findByIdAndDelete(existOrNot._id);
+  if (emailExists) {
+    await User.findByIdAndDelete(emailExists._id);
   }
 
-  const tempData = new User({
+  const data = new User({
     ...userData,
-    expireAt: Date.now() + 1000 * 60 * 30,
   });
-  return tempData.save();
+  return data.save();
 };
 
-export const validateOtp = async (email: string) => {
+export const findMail = async (email: string) => {
   const data = await User.findOne({ email });
-
   return data;
 };
 
-export const checkFlag = async (email: string) => {
-  const check = await User.findOne({ email });
-
-  return check;
-};
-
-export const updateFlag = async (email: string, flag: boolean) => {
+export const updateActive = async (email: string, active: boolean) => {
   const updateFlag = await User.findOneAndUpdate(
     { email },
-    { flag },
+    { active },
     { new: true }
   );
   return updateFlag;
 };
 
 export const resendOtp = async (email: string) => {
-  const resendOtp = await User.findOne({ email });
-
-  if (!resendOtp) {
+  const findMailForResend = await User.findOne({ email });
+  if (!findMailForResend) {
     return false;
   }
-
-  const resendSecret = resendOtp?.secretKey;
-
+  const resendSecret = findMailForResend?.secretKey;
   return resendSecret;
 };

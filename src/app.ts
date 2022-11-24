@@ -1,8 +1,8 @@
+import { v1Router } from "./routes";
 import config from "@config/env/config";
 import cookieParser from "cookie-parser";
 import swaggerui from "swagger-ui-express";
 import { connectDB } from "@config/database";
-import { router as userRouter } from "@routes/user";
 import { errors as celebrateErrors } from "celebrate";
 import swaggerdoc from "@assets/swagger/swagger.json";
 import express, { Request, Response, NextFunction } from "express";
@@ -31,7 +31,7 @@ app.use("/api-docs", swaggerui.serve, swaggerui.setup(swaggerdoc));
  * Initializing APIs base routes.
  * APIs base path also depends on server proxy configuration.
  */
-app.use("/users", userRouter);
+app.use("/api/v1", v1Router);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send("Video Management App Ready ....................... ");

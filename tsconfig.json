@@ -31,7 +31,8 @@
       "@routes/*": ["routes/*"],
       "@constants/*": ["constants/*"],
       "@middleware/*": ["middleware/*"],
-      "@controllers/*": ["controllers/*"]
+      "@controllers/*": ["controllers/*"],
+      "@services/*": ["services/*"]
     }
   },
   "include": ["src/**/*"],

@@ -4,13 +4,12 @@ import { IUser } from "./user.model";
 
 const userSchema = new mongoose.Schema<IUser>(
   {
-    phone: { type: "number", required: true },
+    first_name: { type: "string", required: true },
+    last_name: { type: "string", required: true },
     email: { type: "string", required: true },
+    phone: { type: "number", required: true },
     active: { type: "boolean", default: false },
-    resend: { type: "number", default: 0 },
     secretKey: { type: "string", required: false },
-    expireAt: { type: Date, default:Date.now },
-    createdAt: { type: Date, default:Date.now},
   },
   { timestamps: true }
 );
