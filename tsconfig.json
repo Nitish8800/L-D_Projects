@@ -1,0 +1,39 @@
+{
+  "ts-node": {
+    // Do not forget to `npm i -D tsconfig-paths`
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es5", "es6"],
+    "resolveJsonModule": true,
+    "pretty": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    /* Strict Type-Checking Options */
+    "strict": true,
+    "noImplicitAny": true,
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    /* Advanced Options */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./src/@types"],
+    "paths": {
+      "@utils/*": ["utils/*"],
+      "@models/*": ["models/*"],
+      "@assets/*": ["assets/*"],
+      "@config/*": ["config/*"],
+      "@routes/*": ["routes/*"],
+      "@constants/*": ["constants/*"],
+      "@middleware/*": ["middleware/*"],
+      "@controllers/*": ["controllers/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
