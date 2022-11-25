@@ -1,6 +1,7 @@
 import { IUser } from "@models/user/user.model";
 import { User } from "@models/user/user.schema";
 
+/** It will Create New User Data */
 export const createOtp = async (userData: IUser) => {
   const data = new User({
     ...userData,
@@ -8,6 +9,7 @@ export const createOtp = async (userData: IUser) => {
   return data.save();
 };
 
+/** first it will find user email then it will validate the email and check user is exists or not */
 export const emailExists = async (email: string) => {
   const emailExist = await User.findOne({ email });
   const userEmail = emailExist?.email || "";
@@ -18,15 +20,17 @@ export const emailExists = async (email: string) => {
   return false;
 };
 
+/** It will find mail from User Data */
 export const findMail = async (email: string) => {
   const user = await User.findOne({ email });
   return user;
 };
 
-export const updateActive = async (email: string, active: boolean) => {
+/** It will update the active in user data */
+export const updateActive = async (email: string, isActive: boolean) => {
   const data = await User.findOneAndUpdate(
     { email },
-    { active },
+    { isActive },
     { new: true }
   );
   return data;

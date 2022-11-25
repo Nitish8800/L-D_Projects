@@ -1,18 +1,15 @@
 import { celebrate, Joi, Segments } from "celebrate";
 import {
   emailValidationSchema,
-  passwordValidationSchema,
   stringValidationSchema,
-} from "./signup.validator";
+} from "@middleware/validator/user/user.create.validator";
 
-export const validateChangePassword = celebrate(
+export const verifyUser = celebrate(
   {
     [Segments.BODY]: {
       email: emailValidationSchema.required(),
-      otpCode: stringValidationSchema.required(),
-      password: passwordValidationSchema.required(),
+      otp: stringValidationSchema.required(),
     },
   },
   { abortEarly: false }
 );
-

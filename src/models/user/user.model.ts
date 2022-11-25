@@ -1,9 +1,9 @@
 export interface IUser {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   secretKey?: string;
   otpauthUrl?: string;
-  active?: boolean;
+  isActive?: boolean;
   phone: number;
   email: string;
 }

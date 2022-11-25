@@ -13,11 +13,9 @@ import {
 /** Create New User With Verification Totp and Sending mail to Exist Email ID */
 export const createUserWithOtp = controller(
   async (req: Request, res: Response) => {
-    let { first_name, last_name, email, phone } = req.body;
+    let { firstName, lastName, email, phone } = req.body;
 
     const existEmail = await emailExists(email);
-
-    console.log(existEmail);
 
     if (!existEmail) {
       /** Generate Secret Key */
@@ -31,9 +29,9 @@ export const createUserWithOtp = controller(
         step: 30,
       });
 
-      await createOtp({
-        first_name,
-        last_name,
+      const user = await createOtp({
+        firstName,
+        lastName,
         email,
         phone,
         secretKey,
@@ -50,7 +48,7 @@ export const createUserWithOtp = controller(
             statusCode: 422,
             traceID: Date.now(),
             message: "Unable to generate QR code URL and sending mail ",
-            path: "http://localhost:8800/api/v1/users/create-otp",
+            path: "http://localhost:8800/api/v1/users/createOtp",
           });
           return;
         }
@@ -59,7 +57,7 @@ export const createUserWithOtp = controller(
         const message = `
       <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
       <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to the Totp System Project</h2>
-      <p>Hello ${first_name}! Thanks for signup but you need to required verification code of 6 digit after that you can enjoy our website</p>
+      <p>Hello ${firstName}! Thanks for signup but you need to required verification code of 6 digit after that you can enjoy our website</p>
       <h1 style="text-align: center; text-transform: uppercase;color: red;">${token}</h1>
       </div>
     `;
@@ -74,8 +72,9 @@ export const createUserWithOtp = controller(
           secretKey: secretKey,
           success: true,
           traceID: Date.now(),
-          message: `OTP is succesfully Sent to this ${email} or QR Code Generated`,
+          message: `OTP is successfully Sent to this ${email} or QR Code Generated`,
           qrCodeUrl: urlData,
+          data: user,
         });
         return;
       });
@@ -85,13 +84,13 @@ export const createUserWithOtp = controller(
     const userData = await findMail(email);
     const userSecretKey = userData?.secretKey || "";
 
-    if (userData?.active == true) {
+    if (userData?.isActive == true) {
       return res.status(422).send({
         success: false,
         statusCode: 422,
         traceID: Date.now(),
         message: "Email is already Verified",
-        path: "http://localhost:8800/api/v1/users/create-otp",
+        path: "http://localhost:8800/api/v1/users/createOtp",
       });
     }
 
@@ -110,7 +109,7 @@ export const createUserWithOtp = controller(
           statusCode: 422,
           traceID: Date.now(),
           message: "Unable to generate QR code URL and sending mail ",
-          path: "http://localhost:8800/api/v1/users/create-otp",
+          path: "http://localhost:8800/api/v1/users/createOtp",
         });
         return;
       }
@@ -119,7 +118,7 @@ export const createUserWithOtp = controller(
       const message = `
          <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
          <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to the Totp System Project</h2>
-         <p>Hello ${first_name}! Thanks for signup but you need to required verification code of 6 digit after that you can enjoy our website</p>
+         <p>Hello ${firstName}! Thanks for signup but you need to required verification code of 6 digit after that you can enjoy our website</p>
          <h1 style="text-align: center; text-transform: uppercase;color: red;">${token}</h1>
          </div>
        `;
@@ -129,28 +128,30 @@ export const createUserWithOtp = controller(
         message,
       });
 
-      res.status(201).send({
+      res.status(200).send({
         otp: token,
         secretKey: userSecretKey,
         success: true,
         traceID: Date.now(),
-        message: `User email already exist OTP is succesfully Sent to this ${email} or QR Code Generated`,
+        message: `User email already exist OTP is successfully Sent to this ${email} or QR Code Generated`,
         qrCodeUrl: urlData,
+        data: userData,
       });
     });
   }
 );
 
-/** controller to validate OTP */
+/** controller to validate OTP from User Data*/
 export const verifyValidateTotp = controller(
   async (req: Request, res: Response) => {
     const { email } = req.body;
     const userData = await findMail(email);
 
     if (!userData) {
-      return res.status(400).send({
+      return res.status(404).send({
         success: false,
         message: "Email Not Found",
+        path: "http://localhost:8800/api/v1/users/validateOtp",
       });
     }
 
@@ -164,12 +165,12 @@ export const verifyValidateTotp = controller(
     });
 
     if (!valid) {
-      res.status(401).send({
+      res.status(403).send({
         success: false,
-        statusCode: 401,
+        statusCode: 403,
         traceID: Date.now(),
         message: "Invalid OTP Entered",
-        path: "http://localhost:8800/api/v1/users/validate-otp",
+        path: "http://localhost:8800/api/v1/users/validateOtp",
       });
       return;
     }
@@ -178,30 +179,31 @@ export const verifyValidateTotp = controller(
       const check = await findMail(email);
 
       if (!check) {
-        return res.status(400).send({
+        return res.status(404).send({
           success: false,
           message: "Email Not Found",
         });
       }
 
-      if (check?.active === true) {
+      if (check?.isActive === true) {
         res.status(409).send({
           success: false,
           statusCode: 409,
           traceID: Date.now(),
           message: "OTP already verified , can't be use this OTP agian",
-          path: "http://localhost:8800/api/v1/users/validate-otp",
+          path: "http://localhost:8800/api/v1/users/validateOtp",
         });
         return;
       }
 
-      const active = true;
-      await updateActive(email, active);
+      const isActive = true;
+      await updateActive(email, isActive);
 
       res.status(200).send({
         success: true,
         TraceID: Date.now(),
         Message: " Verified OTP Successfully ",
+        data: userData,
       });
     }
   }

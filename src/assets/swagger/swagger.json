@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "description": "This is Video Management System App",
+    "description": "This is TOTP Management System App",
     "version": "1.0.5",
-    "title": "Video Management System",
+    "title": "L&D Projects",
     "contact": {
       "email": "nitish.kumar@indusnet.co.in"
     }
@@ -12,14 +12,155 @@
     {
       "name": "Users",
       "description": "All User Access"
-    },
-    {
-      "name": "Admin",
-      "description": "Only Admin Access"
     }
   ],
 
-  "paths": {},
+  "paths": {
+    "/api/v1/users/createOtp": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User Signup",
+        "description": "It will register new users data and create totp and qr code",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["firstName", "lastName", "phone", "email"],
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/createSuccessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/validateOtp": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Verify Users Validate",
+        "description": "It will Validate the User Otp which otp already sent to email or qr code is also there for 2 factor authentication",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "otp"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "otp": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/verifyValidateOtpResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "serverErrorResponse": {
@@ -112,6 +253,15 @@
           "message": {
             "type": "string"
           },
+          "secretKey": {
+            "type": "string"
+          },
+          "traceID": {
+            "type": "string"
+          },
+          "qrCodeUrl": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
             "properties": {
@@ -126,10 +276,12 @@
           "status": 201,
           "message": "Created Successfully",
           "data": {
-            "first_name": "Riyaz_2",
-            "last_name": "Ahmad_2",
-            "password": "Riyaz@8800",
-            "email": "riyaz.ahmad@indusnet.co.in"
+            "otp": "441905",
+            "secretKey": "KU2HWWCCIJIEQYTZNNUWIORSO5KUSMBQ",
+            "success": true,
+            "traceID": 1669357042239,
+            "message": "OTP is succesfully Sent to this nitishdev021@gmail.com or QR Code Generated",
+            "qrCodeUrl": "data:image/png;base64,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"
           }
         }
       },
@@ -182,8 +334,8 @@
           "message": "Successfully Sent Mail"
         }
       },
-      "loginResponseObject": {
-        "title": "Login Success Response",
+      "verifyValidateOtpResponseObject": {
+        "title": "Verify Validate Otp Success Response",
         "type": "object",
         "properties": {
           "success": {
@@ -195,26 +347,12 @@
           "message": {
             "type": "string"
           },
+          "TraceID": {
+            "type": "string"
+          },
           "data": {
             "type": "object",
             "properties": {
-              "tokens": {
-                "type": "object",
-                "properties": {
-                  "Access token": {
-                    "type": "string"
-                  },
-                  "Access Token Expiry": {
-                    "type": "string"
-                  },
-                  "Refresh Token": {
-                    "type": "string"
-                  },
-                  "Refresh Token Expiry": {
-                    "type": "string"
-                  }
-                }
-              },
               "user": {
                 "$ref": "#/components/schemas/user"
               }
@@ -224,32 +362,12 @@
         "example": {
           "success": true,
           "status": 200,
-          "message": "Login Successfully",
+          "message": " Verified OTP Successfully ",
+          "TraceID": "Date",
           "data": {
-            "email": "nk880093@gmail.com",
-            "password": "Niku@8800"
+            "email": "nitishdev021@gmail.com",
+            "otp": "576894"
           }
-        }
-      },
-      "logoutResponseObject": {
-        "title": "Log Out Success Response",
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "status": {
-            "type": "integer"
-          },
-          "message": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "success": true,
-          "status": 200,
-          "message": "Log Out Successfully",
-          "data": {}
         }
       },
       "user": {
@@ -258,23 +376,26 @@
           "_id": {
             "type": "integer"
           },
-          "first_name": {
+          "firstName": {
             "type": "string"
           },
-          "last_name": {
+          "lastName": {
             "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "isAdmin": {
-            "type": "string"
-          },
-          "verified": {
-            "type": "boolean"
           },
           "email": {
             "type": "string"
+          },
+          "phone": {
+            "type": "number"
+          },
+          "secretKey": {
+            "type": "string"
+          },
+          "otpauthUrl": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
           }
         }
       }
