@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema<IUser>(
     email: { type: "string", required: true },
     phone: { type: "number", required: true },
     active: { type: "boolean", default: false },
-    secretKey: { type: "string", required: false },
+    secretKey: { type: "string" },
+    otpauthUrl: { type: "string" },
   },
   { timestamps: true }
 );

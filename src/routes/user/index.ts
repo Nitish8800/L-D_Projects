@@ -1,11 +1,7 @@
 import express from "express";
 export const router = express.Router();
 
-import {
-  createUserWithOtp,
-  resendOtpToMail,
-  verifyValidateTotp,
-} from "@controllers/user";
+import { createUserWithOtp, verifyValidateTotp } from "@controllers/user";
 
 import bodyParser from "body-parser";
 router.use(bodyParser.json());
@@ -16,5 +12,3 @@ router.post("/create-otp", createUserWithOtp);
 /** VAlidate Totp Code */
 router.post("/validate-otp", verifyValidateTotp);
 
-/** Resend Totp */
-router.post("/resend-otp", resendOtpToMail);
