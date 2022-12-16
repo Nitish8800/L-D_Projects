@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 router.use(bodyParser.json());
 
 /** Create New User With Verification Totp and Sending mail to Exist Email ID */
-router.post("/createOtp", userCreate, createUserWithOtp);
+router.post("/create-otp", userCreate, createUserWithOtp);
 
 /** VAlidate Totp Code */
-router.post("/validateOtp", verifyUser, verifyValidateTotp);
+router.post("/validate-otp", verifyUser, verifyValidateTotp);
